@@ -7,7 +7,7 @@ namespace L00177784_CA2_GolfApp.Data
     {
 
         [Key]
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [Display(Name = "Round Time")]

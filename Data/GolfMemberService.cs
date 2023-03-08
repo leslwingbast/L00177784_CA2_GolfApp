@@ -1,28 +1,49 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 
 namespace L00177784_CA2_GolfApp.Data
 {
-    public class GolfMemberService : IGolfMemberService
+    public class GolfMemberService
     {
-        private List<GolfMember> _members = new List<GolfMember>();
-        public List<GolfMember> GetMembers()
+        private GolfAppDBContext dBContext;
+
+        public GolfMemberService(GolfAppDBContext dBContext)
         {
-            return _members;
+            this.dBContext = dBContext;
         }
 
-        public void CreateMember(GolfMember member)
+        public async Task<List<GolfMember>> GetMembersAsync()
         {
-
-            member.MemberID = GetMaxID();
-            _members.Add(member);
+            return await dBContext.GolfMembers.ToListAsync();
         }
 
-        private int GetMaxID()
+        public GolfMember GetMember(int id)
         {
-            int maxId = 101;
-            foreach(var maxMember in _members)
+            return dBContext.GolfMembers.First(x => x.MemberID == id);
+        }
+
+        public async Task<GolfMember> AddMemberAsync(GolfMember golfMember)
+        {
+            try
             {
-                if(maxMember.MemberID >= maxId)
+                golfMember.MemberID = await GetMaxID();
+                dBContext.GolfMembers.Add(golfMember);
+                await dBContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return golfMember;
+        }
+
+        private async Task<int> GetMaxID()
+        {
+            var _members = await GetMembersAsync();
+            int maxId = 101;
+            foreach (var maxMember in _members)
+            {
+                if (maxMember.MemberID >= maxId)
                 {
                     maxId = maxMember.MemberID + 1;
                 }
@@ -30,16 +51,73 @@ namespace L00177784_CA2_GolfApp.Data
             return maxId;
         }
 
-        public GolfMember GetMember(int id)
+        public async Task<GolfMember> UpdateMemberAsync(GolfMember golfMember)
         {
-            _members = GetMembers();
-            return _members.First(x => x.MemberID == id);
+            try
+            {
+                var teeTimeExist = dBContext.GolfMembers.FirstOrDefault(p => p.MemberID == golfMember.MemberID);
+                if (teeTimeExist != null)
+                {
+                    dBContext.Update(golfMember);
+                    await dBContext.SaveChangesAsync();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return golfMember;
         }
 
-        public void DeleteMember(int id)
+        public async Task DeleteMemberAsync(GolfMember golfMember)
         {
-            var delMember = GetMember(id);
-            _members.Remove(delMember);
+            try
+            {
+                dBContext.GolfMembers.Remove(golfMember);
+                await dBContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
+
+        //private List<GolfMember> _members = new List<GolfMember>();
+        //public List<GolfMember> GetMembers()
+        //{
+        //    return _members;
+        //}
+
+        //public void CreateMember(GolfMember member)
+        //{
+
+        //    member.MemberID = GetMaxID();
+        //    _members.Add(member);
+        //}
+
+        //private int GetMaxID()
+        //{
+        //    int maxId = 101;
+        //    foreach(var maxMember in _members)
+        //    {
+        //        if(maxMember.MemberID >= maxId)
+        //        {
+        //            maxId = maxMember.MemberID + 1;
+        //        }
+        //    }
+        //    return maxId;
+        //}
+
+        //public GolfMember GetMember(int id)
+        //{
+        //    _members = GetMembers();
+        //    return _members.First(x => x.MemberID == id);
+        //}
+
+        //public void DeleteMember(int id)
+        //{
+        //    var delMember = GetMember(id);
+        //    _members.Remove(delMember);
+        //}
     }
 }

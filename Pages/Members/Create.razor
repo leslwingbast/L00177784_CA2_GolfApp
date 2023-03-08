@@ -1,19 +1,21 @@
 ﻿@page "/members/create"
 @using Data
-@inject IGolfMemberService golfMemberService
+@inject GolfMemberService golfMemberService
 @inject NavigationManager navManager
 
 <h3>Create</h3>
-<MemberForm ButtonText="Create Member" mem="@member"
-            OnValidSubmit="@CreateMember" />
+<MemberForm ButtonText="Create Member" mem="@NewMember"
+            OnValidSubmit="@AddNewMember" />
 
 
 @code {
-    GolfMember member = new GolfMember();
-    void CreateMember()
+    public GolfMember NewMember { get; set; } = new GolfMember();
+    private async Task AddNewMember()
     {
-        golfMemberService.CreateMember(member);
+        await golfMemberService.AddMemberAsync(NewMember);
+        NewMember = new GolfMember();
         navManager.NavigateTo("/members/view");
     }
+    
 }
 

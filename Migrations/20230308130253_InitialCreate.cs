@@ -33,7 +33,7 @@ namespace L00177784_CA2_GolfApp.Migrations
                 name: "TeeTimes",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     RoundDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     RoundHour = table.Column<int>(type: "INTEGER", nullable: false),
@@ -45,7 +45,7 @@ namespace L00177784_CA2_GolfApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TeeTimes", x => x.id);
+                    table.PrimaryKey("PK_TeeTimes", x => x.Id);
                     table.ForeignKey(
                         name: "FK_TeeTimes_GolfMembers_Player1Id",
                         column: x => x.Player1Id,

@@ -56,7 +56,7 @@ namespace L00177784_CA2_GolfApp.Migrations
 
             modelBuilder.Entity("L00177784_CA2_GolfApp.Data.TeeTime", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 

@@ -1,5 +1,5 @@
 ﻿@using Data
-@inject IGolfMemberService golfMemberService;
+@inject GolfMemberService golfMemberService;
 
 <h3>TeeTimeForm</h3>
 
@@ -68,9 +68,9 @@
 
     private List<GolfMember> availableMembers;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        availableMembers = golfMemberService.GetMembers();
+        availableMembers = await golfMemberService.GetMembersAsync();
     }
 
     [Parameter] public TeeTime tee { get; set; }
