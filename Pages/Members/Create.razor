@@ -1,0 +1,19 @@
+﻿@page "/members/create"
+@using Data
+@inject IGolfMemberService golfMemberService
+@inject NavigationManager navManager
+
+<h3>Create</h3>
+<MemberForm ButtonText="Create Member" mem="@member"
+            OnValidSubmit="@CreateMember" />
+
+
+@code {
+    GolfMember member = new GolfMember();
+    void CreateMember()
+    {
+        golfMemberService.CreateMember(member);
+        navManager.NavigateTo("/members/view");
+    }
+}
+

@@ -1,0 +1,75 @@
+﻿@page "/teetimes/view"
+@using Data;
+@inject ITeeTimeService teetimeservice;
+@inject IGolfMemberService golfmemberservice;
+@inject NavigationManager navManager
+
+<h3>Tee Times</h3>
+
+<div class="form-group">
+    <a class="btn btn-success" href="/teetimes/create"><i class="oi oi-plus"></i> Create New</a>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <td>Date</td>
+            <td>Tee Time</td>
+            <td>
+            <table class="table">
+                <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Handicap</td>
+                </tr>
+                </thead>
+            </table>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+            @foreach (var eachtime in teeTimes)
+            {
+             <tr>   
+                <td>@eachtime.RoundDate.ToShortDateString()</td>
+                <td>@eachtime.RoundHour:@eachtime.RoundMinute.ToString("D2")</td>
+                <td>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td>@golfmemberservice.GetMember(eachtime.Player1Id).FirstName @golfmemberservice.GetMember(eachtime.Player1Id).LastName</td>
+                            <td>@golfmemberservice.GetMember(eachtime.Player1Id).Handicap</td>
+                        </tr>
+                        <tr>
+                            <td>@golfmemberservice.GetMember(eachtime.Player2Id).FirstName @golfmemberservice.GetMember(eachtime.Player2Id).LastName</td>
+                            <td>@golfmemberservice.GetMember(eachtime.Player2Id).Handicap</td>
+                        </tr>
+                        <tr>
+                            <td>@golfmemberservice.GetMember(eachtime.Player3Id).FirstName @golfmemberservice.GetMember(eachtime.Player3Id).LastName</td>
+                            <td>@golfmemberservice.GetMember(eachtime.Player3Id).Handicap</td>
+                        </tr>
+                        <tr>
+                            <td>@golfmemberservice.GetMember(eachtime.Player4Id).FirstName @golfmemberservice.GetMember(eachtime.Player4Id).LastName</td>
+                            <td>@golfmemberservice.GetMember(eachtime.Player4Id).Handicap</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            }
+    </tbody>
+</table>
+
+@code {
+    private List<TeeTime> teeTimes;
+
+    protected override void OnInitialized()
+    {
+        teeTimes = teetimeservice.GetTeeTimes();
+        
+    }
+
+    private void AddNew()
+    {
+        navManager.NavigateTo("/teetimes/addteetime");
+    }
+}

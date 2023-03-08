@@ -1,0 +1,53 @@
+﻿@page "/members/view"
+@using Data;
+@inject L00177784_CA2_GolfApp.Data.IGolfMemberService MemberService;
+@inject IJSRuntime js
+
+<h3>Members</h3>
+<div class="form-group">
+    <a class="btn btn-success" href="/members/create"><i class="oi oi-plus"></i> Create New</a>
+</div>
+<br>
+<table class="table">
+    <thead>
+        <tr>
+            <td>Member Id</td>
+            <td>Name</td>
+            <td>Handicap</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var member in members)
+        {
+            <tr>
+                <td>@member.MemberID</td>
+                <td>@member.FirstName @member.LastName</td>
+                <td>@member.Handicap</td>
+                <td>
+                    <a class="btn btn-success" href="members/edit/@member.MemberID">Edit</a>
+                    <button class="btn btn-danger" @onclick="@(() => DeleteMember(member.MemberID))">Delete</button>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+@code {
+    private List<GolfMember> members;
+
+    protected override void OnInitialized()
+    {
+        members = MemberService.GetMembers();
+    }
+
+    async Task DeleteMember(int memberId)
+    {
+        var delMember = members.First(x => x.MemberID == memberId);
+        bool confirmed = await js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {delMember.FirstName} {delMember.LastName}?");
+        if (confirmed)
+        {
+            MemberService.DeleteMember(memberId);
+        }
+    }
+}

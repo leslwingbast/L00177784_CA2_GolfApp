@@ -1,0 +1,28 @@
+﻿@page "/members/edit/{memberId:int}"
+@using Data
+@inject IGolfMemberService golfMemberService
+@inject NavigationManager navManager
+
+<h3>Edit</h3>
+
+<label>Membership ID: @mem.MemberID</label>
+<MemberForm ButtonText="Update" mem="mem"
+      OnValidSubmit="@EditMember" />
+
+@code {
+    [Parameter]
+    public int memberID { get; set; }
+
+    GolfMember mem = new GolfMember();
+
+    protected override void OnInitialized()
+    {
+        mem = golfMemberService.GetMember(memberID);
+    }
+
+    void EditMember()
+    {
+        navManager.NavigateTo("/members/view");
+    }
+
+}

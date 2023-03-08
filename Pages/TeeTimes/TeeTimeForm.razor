@@ -1,0 +1,80 @@
+﻿@using Data
+@inject IGolfMemberService golfMemberService;
+
+<h3>TeeTimeForm</h3>
+
+<EditForm Model="@tee" OnValidSubmit="@OnValidSubmit">
+    <div class="form-group">
+        <label>Date :</label>
+        <InputDate id="date" @bind-Value="@tee.RoundDate" />
+    </div>
+    <div class="form-group">
+        <label>Time :</label>
+        <InputSelect id="hour" @bind-Value="@tee.RoundHour">
+            @for(int i = 6; i < 21; i++){
+                <option value=@i>@i</option>
+            }
+        </InputSelect>
+        <InputSelect id="hour" @bind-Value="@tee.RoundMinute">           
+            <option value=0>00</option>
+            <option value=15>15</option>
+            <option value=30>30</option>
+            <option value=45>45</option>
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label>Player 1</label>
+            <InputSelect id="player1" @bind-Value="@tee.Player1Id">
+                @foreach (var member in availableMembers)
+                {
+                    <option value="@member.MemberID">@member.FirstName @member.LastName</option>
+                }
+                </InputSelect>
+    </div>
+    <div class="form-group">
+        <label>Player 2</label>
+            <InputSelect id="player2" @bind-Value="@tee.Player2Id">
+                @foreach (var member in availableMembers)
+                {
+                    <option value="@member.MemberID">@member.FirstName @member.LastName</option>
+                }
+                </InputSelect>
+    </div>
+    <div class="form-group">
+        <label>Player 3</label>
+            <InputSelect id="player3" @bind-Value="@tee.Player3Id">
+                @foreach (var member in availableMembers)
+                {
+                    <option value="@member.MemberID">@member.FirstName @member.LastName</option>
+                }
+                </InputSelect>
+    </div>
+    <div class="form-group">
+        <label>Player 4</label>
+            <InputSelect id="player4" @bind-Value="@tee.Player4Id">
+                @foreach (var member in availableMembers)
+                {
+                    <option value="@member.MemberID">@member.FirstName @member.LastName</option>
+                }
+                </InputSelect>
+    </div>
+    <button type="submit" class="btn btn-success">
+        @ButtonText
+    </button>
+    </EditForm>
+
+
+@code {
+
+    private List<GolfMember> availableMembers;
+
+    protected override void OnInitialized()
+    {
+        availableMembers = golfMemberService.GetMembers();
+    }
+
+    [Parameter] public TeeTime tee { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+}
