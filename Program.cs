@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Components.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//var connectionString = builder.Configuration.GetConnectionString("GolfAppDBContext");
+builder.Services.AddSqlite<GolfAppDBContext>("Data Source=GolfApp.db");
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();

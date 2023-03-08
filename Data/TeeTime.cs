@@ -31,7 +31,6 @@ namespace L00177784_CA2_GolfApp.Data
         public int Player4Id { get; set; }
         public GolfMember Player4 { get; set; }
 
-        public List<int> PlayerList { get; set;}
     
         
     }

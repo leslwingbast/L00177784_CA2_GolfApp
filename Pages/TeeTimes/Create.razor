@@ -13,13 +13,6 @@
     TeeTime teeTime = new TeeTime();
     async void CreateTeeTime()
     {
-        teeTime.PlayerList = new List<int> 
-        {
-            teeTime.Player1Id, 
-            teeTime.Player2Id, 
-            teeTime.Player3Id,
-            teeTime.Player4Id };
-
         teeTime.Player1 = golfMemberService.GetMember(teeTime.Player1Id);
         teeTime.Player2 = golfMemberService.GetMember(teeTime.Player2Id);
         teeTime.Player3 = golfMemberService.GetMember(teeTime.Player3Id);

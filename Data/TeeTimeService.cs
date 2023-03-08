@@ -1,4 +1,6 @@
-﻿namespace L00177784_CA2_GolfApp.Data
+﻿using System.Runtime.CompilerServices;
+
+namespace L00177784_CA2_GolfApp.Data
 {
     public class TeeTimeService : ITeeTimeService
     {
@@ -41,11 +43,19 @@
 
         public int CheckPlayers(TeeTime newTime)
         {
+            List<int> playerList = new List<int>() 
+            {
+                newTime.Player1Id,
+                newTime.Player2Id,
+                newTime.Player3Id,
+                newTime.Player4Id
+            };
+            
             foreach(TeeTime teeTime in _teeTimeList.Where(x => x.RoundDate == newTime.RoundDate))
             {
-                foreach(int playerID in newTime.PlayerList)
+                foreach(int playerID in playerList)
                 {
-                    if (teeTime.PlayerList.Contains(playerID)){
+                    if (teeTime.Player1Id == playerID || teeTime.Player2Id == playerID || teeTime.Player3Id == playerID || teeTime.Player4Id == playerID){
                         return playerID;
                     }
                 }
