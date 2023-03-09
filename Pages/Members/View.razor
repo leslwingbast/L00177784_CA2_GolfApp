@@ -5,7 +5,7 @@
 
 <h3>Members</h3>
 <div class="form-group">
-    <a class="btn btn-success" href="/members/create"><i class="oi oi-plus"></i> Create New</a>
+    <a class="btn btn-success" href="/members/create"><i class="oi oi-plus"></i> Create New Member</a>
 </div>
 <br>
 <table class="table">
@@ -24,8 +24,8 @@
                 <td>@member.FirstName @member.LastName</td>
                 <td>@member.Handicap</td>
                 <td>
-                    <a class="btn btn-success" href="members/edit/@member.MemberID">Edit</a>
-                    <button class="btn btn-danger" @onclick="@(() => DeleteMember(member))">Delete</button>
+                    <a class="btn btn-success mx-3" href="members/edit/@member.MemberID">Edit</a>
+                    <button class="btn btn-danger mx-3" @onclick="@(() => DeleteMember(member))">Delete</button>
                 </td>
             </tr>
         }

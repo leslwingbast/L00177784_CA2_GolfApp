@@ -1,7 +1,7 @@
 ﻿@page "/teetimes/create"
 @using Data
-@inject ITeeTimeService teeTimeService
-@inject IGolfMemberService golfMemberService
+@inject TeeTimeService teeTimeService
+@inject GolfMemberService golfMemberService
 @inject NavigationManager navManager
 @inject IJSRuntime js
 
@@ -18,7 +18,7 @@
         teeTime.Player3 = golfMemberService.GetMember(teeTime.Player3Id);
         teeTime.Player4 = golfMemberService.GetMember(teeTime.Player4Id);
 
-        int returnOption = teeTimeService.AddTeeTime(teeTime);
+        int returnOption = await teeTimeService.AddTeeTimeAsync(teeTime);
 
         if(returnOption == 1)
         {
@@ -32,7 +32,7 @@
         else
         {
             await js.InvokeVoidAsync("alert", $@"{golfMemberService.GetMember(returnOption).FirstName} {golfMemberService.GetMember(returnOption).LastName} has already booked a tee time for {teeTime.RoundDate.ToShortDateString()}.
-            Members are only alowed to book 1 round per day");
+Members are only alowed to book 1 round per day");
         }
         
         

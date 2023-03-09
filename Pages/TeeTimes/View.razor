@@ -1,75 +1,91 @@
 ﻿@page "/teetimes/view"
 @using Data;
-@inject ITeeTimeService teetimeservice;
-@inject IGolfMemberService golfmemberservice;
+@inject TeeTimeService teeTimeService;
+@inject GolfMemberService golfMemberService;
 @inject NavigationManager navManager
+@inject IJSRuntime js
 
 <h3>Tee Times</h3>
 
-<div class="form-group">
-    <a class="btn btn-success" href="/teetimes/create"><i class="oi oi-plus"></i> Create New</a>
-</div>
-<table class="table">
-    <thead>
-        <tr>
-            <td>Date</td>
-            <td>Tee Time</td>
-            <td>
-            <table class="table">
-                <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Handicap</td>
-                </tr>
-                </thead>
-            </table>
-            </td>
-        </tr>
-    </thead>
-    <tbody>
-            @foreach (var eachtime in teeTimes)
-            {
-             <tr>   
-                <td>@eachtime.RoundDate.ToShortDateString()</td>
-                <td>@eachtime.RoundHour:@eachtime.RoundMinute.ToString("D2")</td>
-                <td>
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <td>@golfmemberservice.GetMember(eachtime.Player1Id).FirstName @golfmemberservice.GetMember(eachtime.Player1Id).LastName</td>
-                            <td>@golfmemberservice.GetMember(eachtime.Player1Id).Handicap</td>
-                        </tr>
-                        <tr>
-                            <td>@golfmemberservice.GetMember(eachtime.Player2Id).FirstName @golfmemberservice.GetMember(eachtime.Player2Id).LastName</td>
-                            <td>@golfmemberservice.GetMember(eachtime.Player2Id).Handicap</td>
-                        </tr>
-                        <tr>
-                            <td>@golfmemberservice.GetMember(eachtime.Player3Id).FirstName @golfmemberservice.GetMember(eachtime.Player3Id).LastName</td>
-                            <td>@golfmemberservice.GetMember(eachtime.Player3Id).Handicap</td>
-                        </tr>
-                        <tr>
-                            <td>@golfmemberservice.GetMember(eachtime.Player4Id).FirstName @golfmemberservice.GetMember(eachtime.Player4Id).LastName</td>
-                            <td>@golfmemberservice.GetMember(eachtime.Player4Id).Handicap</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </td>
+
+@if (teeTimes.Count <= 0)
+{
+    <div class="form-group">
+        <a class="btn btn-success" href="/teetimes/create"><i class="oi oi-plus"></i> Create New</a>
+    </div>
+    <center>
+        <p>Please wait while data is loading...</p>
+        <div><img src="images/BallSpinner.gif"></div>
+    </center>
+}
+
+else
+{
+    <div class="form-group">
+        <a class="btn btn-success" href="/teetimes/create"><i class="oi oi-plus"></i> Create New</a>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <td>Date</td>
+                <td>Tee Time</td>
+                <td>Player Name</td>
+                <td>Handicap</td>
             </tr>
+        </thead>
+        <tbody>
+            @if(teeTimes.Count > 0)
+            {
+                @foreach (var eachtime in teeTimes)
+                {
+                 <tr>   
+                    <td>@eachtime.RoundDate.ToShortDateString()</td>
+                    <td>@eachtime.RoundHour:@eachtime.RoundMinute.ToString("D2")</td>
+                    <td>@eachtime.Player1.FirstName @eachtime.Player1.LastName <br />@eachtime.Player2.FirstName @eachtime.Player2.LastName <br />@eachtime.Player3.FirstName @eachtime.Player3.LastName <br />@eachtime.Player4.FirstName @eachtime.Player4.LastName </td>
+                    <td>@eachtime.Player1.Handicap <br />@eachtime.Player2.Handicap <br />@eachtime.Player3.Handicap <br />@eachtime.Player4.Handicap </td>
+                    <td>
+                        <a class="btn btn-success mx-3" href="teetimes/edit/@eachtime.Id">Edit</a>
+                        <button class="btn btn-danger mx-3" @onclick="@(() => DeleteTeeTime(eachtime))">Delete</button>
+                    </td>
+                </tr>
+                }
             }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+}
 
 @code {
     private List<TeeTime> teeTimes;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        teeTimes = teetimeservice.GetTeeTimes();
-        
+        await RefreshTeeTimes();
+    }
+
+    private async Task RefreshTeeTimes()
+    {
+        teeTimes = await teeTimeService.GetTeeTimesAsync();
+        foreach(var teeTime in teeTimes)
+        {
+            teeTime.Player1 = golfMemberService.GetMember(teeTime.Player1Id);
+            teeTime.Player2 = golfMemberService.GetMember(teeTime.Player2Id);
+            teeTime.Player3 = golfMemberService.GetMember(teeTime.Player3Id);
+            teeTime.Player4 = golfMemberService.GetMember(teeTime.Player4Id);
+        }
     }
 
     private void AddNew()
     {
         navManager.NavigateTo("/teetimes/addteetime");
+    }
+
+    private async Task DeleteTeeTime(TeeTime delTeeTime)
+    {
+        bool confirmed = await js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete Tee Time booked for {delTeeTime.RoundHour}:{delTeeTime.RoundMinute.ToString("D2")} on the {delTeeTime.RoundDate.ToShortDateString()}?");
+        if (confirmed)
+        {
+            await teeTimeService.DeleteTeeTimeAsync(delTeeTime);
+            await RefreshTeeTimes();
+        }
     }
 }
