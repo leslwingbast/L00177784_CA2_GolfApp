@@ -1,6 +1,6 @@
 ﻿@page "/members/edit/{memberId:int}"
 @using Data
-@inject IGolfMemberService golfMemberService
+@inject GolfMemberService golfMemberService
 @inject NavigationManager navManager
 
 <h3>Edit</h3>
@@ -15,14 +15,16 @@
 
     GolfMember mem = new GolfMember();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         mem = golfMemberService.GetMember(memberID);
     }
 
-    void EditMember()
+    private async Task EditMember()
     {
+        await golfMemberService.UpdateMemberAsync(mem);
         navManager.NavigateTo("/members/view");
+
     }
 
 }

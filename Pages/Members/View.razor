@@ -1,11 +1,11 @@
 ﻿@page "/members/view"
 @using Data;
-@inject L00177784_CA2_GolfApp.Data.IGolfMemberService MemberService;
+@inject GolfMemberService MemberService;
 @inject IJSRuntime js
 
 <h3>Members</h3>
 <div class="form-group">
-    <a class="btn btn-success" href="/members/create"><i class="oi oi-plus"></i> Create New</a>
+    <a class="btn btn-success" href="/members/create"><i class="oi oi-plus"></i> Create New Member</a>
 </div>
 <br>
 <table class="table">
@@ -24,8 +24,8 @@
                 <td>@member.FirstName @member.LastName</td>
                 <td>@member.Handicap</td>
                 <td>
-                    <a class="btn btn-success" href="members/edit/@member.MemberID">Edit</a>
-                    <button class="btn btn-danger" @onclick="@(() => DeleteMember(member.MemberID))">Delete</button>
+                    <a class="btn btn-success mx-3" href="members/edit/@member.MemberID">Edit</a>
+                    <button class="btn btn-danger mx-3" @onclick="@(() => DeleteMember(member))">Delete</button>
                 </td>
             </tr>
         }
@@ -36,18 +36,23 @@
 @code {
     private List<GolfMember> members;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        members = MemberService.GetMembers();
+        await RefreshMembers();
     }
 
-    async Task DeleteMember(int memberId)
+    private async Task RefreshMembers()
     {
-        var delMember = members.First(x => x.MemberID == memberId);
+        members = await MemberService.GetMembersAsync();
+    }
+
+    private async Task DeleteMember(GolfMember delMember)
+    {
         bool confirmed = await js.InvokeAsync<bool>("confirm", $"Are you sure you want to delete {delMember.FirstName} {delMember.LastName}?");
         if (confirmed)
         {
-            MemberService.DeleteMember(memberId);
+            await MemberService.DeleteMemberAsync(delMember);
+            await RefreshMembers();
         }
     }
 }

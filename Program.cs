@@ -1,15 +1,24 @@
+using BlazorStrap;
 using L00177784_CA2_GolfApp.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("GolfAppDBContext");
+//builder.Services.AddSqlite<GolfAppDBContext>(connectionString);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<IGolfMemberService, GolfMemberService>();
-builder.Services.AddSingleton<ITeeTimeService, TeeTimeService>();
-
+builder.Services.AddDbContext<GolfAppDBContext>(options =>
+{
+    options.UseSqlite(connectionString);
+});
+builder.Services.AddScoped<GolfMemberService>();
+builder.Services.AddScoped<TeeTimeService>();
+builder.Services.AddBlazorStrap();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

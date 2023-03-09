@@ -1,5 +1,52 @@
-﻿<h3>Edit</h3>
+﻿@page "/teetimes/edit/{teeTimeId:int}"
+@using Data
+@inject TeeTimeService teeTimeService
+@inject GolfMemberService golfMemberService
+@inject NavigationManager navManager
+@inject IJSRuntime js
+
+<h3>Edit</h3>
+
+<label>TeeTime ID: @time.Id</label>
+<TeeTimeForm ButtonText="Edit TeeTime" tee="@time"
+             OnValidSubmit="@EditTeeTime" />
 
 @code {
+    [Parameter]
+    public int teeTimeId { get; set; }
 
+    TeeTime time = new TeeTime();
+
+    protected override async Task OnInitializedAsync()
+    {
+        time = teeTimeService.GetTeeTime(teeTimeId);
+    }
+
+    private async Task EditTeeTime()
+    {
+        time.Player1 = golfMemberService.GetMember(time.Player1Id);
+        time.Player2 = golfMemberService.GetMember(time.Player2Id);
+        time.Player3 = golfMemberService.GetMember(time.Player3Id);
+        time.Player4 = golfMemberService.GetMember(time.Player4Id);
+
+        int returnOption = await teeTimeService.UpdateTeeTimeAsync(time);
+
+        if (returnOption == 1)
+        {
+            await js.InvokeVoidAsync("alert", $"Tee Time on {time.RoundDate.ToShortDateString()} at {time.RoundHour}:{time.RoundMinute.ToString("D2")} has been changed!");
+            navManager.NavigateTo("/teetimes/view");
+        }
+        else if (returnOption == 0)
+        {
+            await js.InvokeVoidAsync("alert", "This time is taken, please choose another time!!");
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", $@"{golfMemberService.GetMember(returnOption).FirstName} {golfMemberService.GetMember(returnOption).LastName} has already booked a tee time for {time.RoundDate.ToShortDateString()}.
+Members are only alowed to book 1 round per day");
+        }
+
+
+    }
+    
 }
