@@ -10,9 +10,12 @@
 
 @if (teeTimes.Count <= 0)
 {
-    <div class="form-group">
-        <a class="btn btn-success" href="/teetimes/create"><i class="oi oi-plus"></i> Create New</a>
+    <div class="row">
+        <div class="form-group">
+            <a class="btn btn-success" href="/teetimes/create"><i class="oi oi-plus"></i> Create New</a>
+        </div>
     </div>
+
     <center>
         <p>Please wait while data is loading...</p>
         <div><img src="images/BallSpinner.gif"></div>
@@ -22,15 +25,18 @@
 else
 {
     <div class="form-group">
-        <a class="btn btn-success" href="/teetimes/create"><i class="oi oi-plus"></i> Create New</a>
+        <a class="btn btn-success" href="/teetimes/create" title="Create a new Tee Time"><i class="oi oi-plus"></i> Create New</a>
     </div>
+    <br />
     <table class="table">
         <thead>
-            <tr>
+            <tr class="fw-bold">
                 <td>Date</td>
                 <td>Tee Time</td>
                 <td>Player Name</td>
                 <td>Handicap</td>
+                <td></td>
+                <td></td>
             </tr>
         </thead>
         <tbody>
@@ -38,14 +44,21 @@ else
             {
                 @foreach (var eachtime in teeTimes)
                 {
-                 <tr>   
+                 <tr class="align-middle">   
                     <td>@eachtime.RoundDate.ToShortDateString()</td>
                     <td>@eachtime.RoundHour:@eachtime.RoundMinute.ToString("D2")</td>
                     <td>@eachtime.Player1.FirstName @eachtime.Player1.LastName <br />@eachtime.Player2.FirstName @eachtime.Player2.LastName <br />@eachtime.Player3.FirstName @eachtime.Player3.LastName <br />@eachtime.Player4.FirstName @eachtime.Player4.LastName </td>
                     <td>@eachtime.Player1.Handicap <br />@eachtime.Player2.Handicap <br />@eachtime.Player3.Handicap <br />@eachtime.Player4.Handicap </td>
                     <td>
-                        <a class="btn btn-success mx-3" href="teetimes/edit/@eachtime.Id">Edit</a>
-                        <button class="btn btn-danger mx-3" @onclick="@(() => DeleteTeeTime(eachtime))">Delete</button>
+                        @if(@eachtime.RoundDate > DateTime.Now.Date)
+                            {
+                                <a class="btn btn-success mx-3 py-1" href="teetimes/edit/@eachtime.Id">Edit</a>
+                            }
+                        else
+                            {
+                                <div class="btn btn-secondary mx-3 py-1" title="This Tee Times is in the past and can not be changed!">Edit</div>
+                            }
+                            <button class="btn btn-danger mx-3 py-1" @onclick="@(() => DeleteTeeTime(eachtime))">Delete</button>
                     </td>
                 </tr>
                 }

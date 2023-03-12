@@ -3,19 +3,109 @@
 <PageTitle>Golf Club App</PageTitle>
 
 <div class="row">
-    <div class="col mx-3">
+    <div class="col-3 mx-auto">
         <center>
-            <a href="/members/view"><img class="img-fluid" src="images/Members.png" /></a>
+            <a href="/members/view">
+                <div class="member-image img-fluid"
+                     @onmouseout="@OnMouseOut"
+                     @onmouseover="@OnMouseOver">
+                    <div class="@_HoverImageCSSClass img-fluid"></div>
+                </div>
+            </a>
         </center>
     </div>
-    <div class="col mx-3">
+    <div class="col-3 mx-auto">
+        <center>
+            <a href="/teetimes/view">
+                <div class="teetime-image img-fluid"
+                     @onmouseout="@OnMouseOutTeeTimes"
+                     @onmouseover="@OnMouseOverTeeTimes">
+                    <div class="@_HoverImageCSSClassTeeTimes img-fluid"></div>
+                </div>
+            </a>
+        </center>
+    </div>
+    <div class="col-3 mx-auto">
+        <center>
+            <a href="/stats">
+                <div class="stats-image img-fluid"
+                     @onmouseout="@OnMouseOutStats"
+                     @onmouseover="@OnMouseOverStats">
+                    <div class="@_HoverImageCSSClassStats img-fluid"></div>
+                </div>
+            </a>
+        </center>
+    </div>
+@*    <div class="col-3 mx-3">
         <center>
             <a href="/teetimes/view"><img class="img-fluid" src="images/TeeTimes.png" /></a>
         </center>
     </div>
+    <div class="col-3 mx-3">
+        <center>
+            <a href="/teetimes/view"><img class="img-fluid" src="images/TeeTimes.png" /></a>
+        </center>
+    </div>*@
 </div>
 
 
 @code
 {
+    bool _IsHovering = false;
+    bool _IsHoveringTeeTimes = false;
+    bool _IsHoveringStats = false;
+    string _HoverImageCSSClass = "member-image";
+    string _HoverImageCSSClassTeeTimes = "teetime-image";
+    string _HoverImageCSSClassStats = "stats-image";
+
+    protected void OnMouseOver(MouseEventArgs mouseEvent)
+    {
+        if (!_IsHovering)
+        {
+            _IsHovering = true;
+            _HoverImageCSSClass = "member-hovering";
+            StateHasChanged();
+        }
+    }
+
+    protected void OnMouseOut(MouseEventArgs mouseEvent)
+    {
+        _HoverImageCSSClass = "";
+        _IsHovering = false;
+        StateHasChanged();
+    }
+
+    protected void OnMouseOverTeeTimes(MouseEventArgs mouseEvent)
+    {
+        if (!_IsHoveringTeeTimes)
+        {
+            _IsHoveringTeeTimes = true;
+            _HoverImageCSSClassTeeTimes = "teetime-hovering";
+            StateHasChanged();
+        }
+    }
+
+    protected void OnMouseOutTeeTimes(MouseEventArgs mouseEvent)
+    {
+        _HoverImageCSSClassTeeTimes = "";
+        _IsHoveringTeeTimes = false;
+        StateHasChanged();
+    }
+
+    protected void OnMouseOverStats(MouseEventArgs mouseEvent)
+    {
+        if (!_IsHoveringStats)
+        {
+            _IsHoveringStats = true;
+            _HoverImageCSSClassStats = "stats-hovering";
+            StateHasChanged();
+        }
+    }
+
+    protected void OnMouseOutStats(MouseEventArgs mouseEvent)
+    {
+        _HoverImageCSSClassStats = "";
+        _IsHoveringStats = false;
+        StateHasChanged();
+    }
 }

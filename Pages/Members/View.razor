@@ -5,27 +5,42 @@
 
 <h3>Members</h3>
 <div class="form-group">
-    <a class="btn btn-success" href="/members/create"><i class="oi oi-plus"></i> Create New Member</a>
+    <a class="btn btn-success mx-2" href="/members/create"><i class="oi oi-plus"></i> Create New Member</a>
+    <div class="btn btn-success mx-2" @onclick="ShowAll">All Members</div>
+    <div class="btn btn-success mx-2" @onclick="ShowFemale"><i class="bi bi-gender-female" /> Female Members</div>
+    <div class="btn btn-success mx-2" @onclick="ShowMale"><i class="bi bi-gender-male" /> Male Members</div>
 </div>
 <br>
-<table class="table">
+<table class="table" >
     <thead>
         <tr>
-            <td>Member Id</td>
-            <td>Name</td>
-            <td>Handicap</td>
+            <td mx-2>Id</td>
+            <td mx-2>Name</td>
+            <td mx-2>Handicap</td>
+            <td mx-2>Gender</td>
+            <td></td>
+            <td></td>
         </tr>
     </thead>
     <tbody>
-        @foreach(var member in members)
+        @foreach(var member in allMembers)
         {
             <tr>
-                <td>@member.MemberID</td>
-                <td>@member.FirstName @member.LastName</td>
-                <td>@member.Handicap</td>
-                <td>
-                    <a class="btn btn-success mx-3" href="members/edit/@member.MemberID">Edit</a>
-                    <button class="btn btn-danger mx-3" @onclick="@(() => DeleteMember(member))">Delete</button>
+                <td mx-2>@member.MemberID</td>
+                <td mx-2>@member.FirstName @member.LastName</td>
+                <td mx-2>@member.Handicap</td>
+                <td mx-2>@if (member.Sex == "Male")
+                    {
+                        <i class="bi bi-gender-male"/>
+                    }
+                    else
+                    {
+                        <i class="bi bi-gender-female"/>
+                    }
+                </td>
+                <td mx-5>
+                    <a class="btn btn-success mx-3 py-1" href="members/edit/@member.MemberID">Edit</a>
+                    <button class="btn btn-danger mx-3 py-1" @onclick="@(() => DeleteMember(member))">Delete</button>
                 </td>
             </tr>
         }
@@ -34,7 +49,7 @@
 </table>
 
 @code {
-    private List<GolfMember> members;
+    private List<GolfMember> allMembers;
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,7 +58,7 @@
 
     private async Task RefreshMembers()
     {
-        members = await MemberService.GetMembersAsync();
+        allMembers = await MemberService.GetMembersAsync();
     }
 
     private async Task DeleteMember(GolfMember delMember)
@@ -54,5 +69,22 @@
             await MemberService.DeleteMemberAsync(delMember);
             await RefreshMembers();
         }
+    }
+
+    private async Task ShowAll()
+    {
+        await RefreshMembers();
+    }
+
+    private async Task ShowFemale()
+    {
+        await RefreshMembers();
+        allMembers = allMembers.Where(x => x.Sex == "Female").ToList();
+    }
+
+    private async Task ShowMale()
+    {
+        await RefreshMembers();
+        allMembers = allMembers.Where(x => x.Sex == "Male").ToList();
     }
 }

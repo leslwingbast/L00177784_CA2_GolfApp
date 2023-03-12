@@ -13,7 +13,7 @@ namespace L00177784_CA2_GolfApp.Data
         [Display(Name = "Round Time")]
         public DateTime RoundDate { get; set; } = DateTime.Now.Date;
 
-        public int RoundHour { get; set; }
+        public int RoundHour { get; set; } = 9;
 
         public int RoundMinute { get; set; }
 

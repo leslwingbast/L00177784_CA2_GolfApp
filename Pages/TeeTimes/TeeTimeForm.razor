@@ -25,6 +25,7 @@
     <div class="form-group">
         <label>Player 1: </label>
         <InputSelect id="player1" @bind-Value="@tee.Player1Id">
+                <option>Player 1</option>
                 @foreach (var member in availableMembers)
                 {
                     <option value="@member.MemberID">@member.FirstName @member.LastName</option>
@@ -75,7 +76,6 @@
     protected override async Task OnInitializedAsync()
     {
         availableMembers = await golfMemberService.GetMembersAsync();
-        availableMembers.Sort((p, q) => p.LastName.CompareTo(q.LastName));
         string minDate = (DateTime.Now.ToString("yyyy-MM-dd"));
         teeTimeDateAttributes.Add("min", minDate);
     }
