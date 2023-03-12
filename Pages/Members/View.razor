@@ -10,7 +10,12 @@
     <div class="btn btn-success mx-2" @onclick="ShowFemale"><i class="bi bi-gender-female" /> Female Members</div>
     <div class="btn btn-success mx-2" @onclick="ShowMale"><i class="bi bi-gender-male" /> Male Members</div>
 </div>
-<br>
+<div class="form-group p-1 mx-2 my-3">
+    <input class="form-control" type="text" placeholder="Filter Members"
+           @bind="filterMembers"
+           @bind:event="oninput">
+</div>
+
 <table class="table" >
     <thead>
         <tr>
@@ -25,7 +30,10 @@
     <tbody>
         @foreach(var member in allMembers)
         {
+            if (!IsVisible(member))
+                continue;
             <tr>
+
                 <td mx-2>@member.MemberID</td>
                 <td mx-2>@member.FirstName @member.LastName</td>
                 <td mx-2>@member.Handicap</td>
@@ -50,6 +58,7 @@
 
 @code {
     private List<GolfMember> allMembers;
+    private string filterMembers;
 
     protected override async Task OnInitializedAsync()
     {
@@ -86,5 +95,15 @@
     {
         await RefreshMembers();
         allMembers = allMembers.Where(x => x.Sex == "Male").ToList();
+    }
+    public bool IsVisible(GolfMember filterMember)
+    {
+        if (string.IsNullOrEmpty(filterMembers))
+            return true;
+
+        if (filterMember.FullName.Contains(filterMembers, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
     }
 }

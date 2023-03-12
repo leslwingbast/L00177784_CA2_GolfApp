@@ -9,13 +9,13 @@
 <br />
 
 <div class="row">
-    <div class="col-lg-4 mr-5">
+    <div class="col-sm mr-5">
         <div class="row input-group">
-            <div class="col-2">
-                    <label class="form-label py-1">Query:</label>
+            <div class="col">
+                    <label class="col-form-label-lg py-1">Query:</label>
             </div>
-            <div class="col-3">
-                    <select class="user-select-auto px-3 py-1" @onchange="QueryData">
+            <div class="col">
+                    <select class="form-select-lg px-3 py-1" @onchange="QueryData">
                         <option selected value="1">Handicap golfers below 10</option>
                         <option value="2">Handicap golfers between 11 and 20</option>
                         <option value="3">Handicap golfers above 20</option>
@@ -26,8 +26,8 @@
         <table class="table">
             <thead>
                 <tr>
-                    <td>Name</td>
-                    <td>Handicap</td>
+                    <td><i class="@memberSort" onclick="@(() => MemberSorting("MemberName"))"/> Member</td>
+                    <td><i class="@handicapSort" onclick="@(() => MemberSorting("Handicap"))" /> Handicap</td>
                 </tr>
             </thead>
             <tbody>
@@ -41,29 +41,64 @@
             </tbody>
         </table>
     </div>
-    <div class="col-lg-4 mx-5">
-        <input type="text" id="memberName" placeholder="Type Member's' Name" list="memberDataList"/>
-        <datalist id="memberDataList">
-            @foreach(var member in allMembers)
-            {
-                <option data-value="@member.MemberID">@member.FirstName @member.LastName</option>
-            }
-        </datalist>
-        <button class="btn btn-primary" @onclick="GetRounds">Get Rounds</button>
+    <div class="col mx-5">
+        <div class="row input-group">
+            <div class="form-group p-1 m-1">
+                <input class="form-control" type="text" placeholder="Filter Members"
+                       @bind="filterMembers"
+                       @bind:event="oninput">
+            </div>
+        </div>
+        <br />
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Handicap</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var member in roundList)
+                    if (counter < 20)
+                    {
+                        {
+                        if (!IsVisible(member))
+                            continue;
+                            <tr>
+                                <td>@member.FirstName @member.LastName</td>
+                                <td><a class="btn btn-success" href="members/teetimes/@member.MemberID">Get Round Times</a></td>
+                            </tr>
+                        }
+                        counter++;
+                    }
+                    else
+                    {
+                        ResetCounter();
+                        break;
+
+                    }
+            </tbody>
+        </table>
     </div>
+
 </div>
 
 
 
 
 @code {
-    private List<GolfMember> allMembers, queryList;
-    private int selectedMember;
+    private List<GolfMember> allMembers, queryList, roundList;
+    protected string filterMembers { get; set; }
+    int counter = 0;
+    string memberSort = "bi bi-arrow-up";
+    string handicapSort = "bi bi-arrow-down";
+    bool sort = false;
 
     protected override async Task OnInitializedAsync()
     {
         allMembers = await golfMemberService.GetMembersAsync();
         queryList = allMembers.Where(x => x.Handicap < 10).ToList();
+        roundList = allMembers;
     }
 
     void QueryData(ChangeEventArgs e)
@@ -86,9 +121,67 @@
         StateHasChanged();
     }
 
-    public async Task GetRounds()
+    public bool IsVisible(GolfMember filterMember)
     {
-        await js.InvokeVoidAsync("alert", $@"{selectedMember}");
+        if (string.IsNullOrEmpty(filterMembers))
+            return true;
+
+        if (filterMember.FullName.Contains(filterMembers, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+    public void ResetCounter()
+    {
+        counter = 0;
+    }
+
+    protected void MemberSorting(string SortColumn)
+    {
+        if (!sort)
+        {
+            memberSort = "bi bi-arrow-down";
+            handicapSort = "bi bi-arrow-up";
+
+            sort = true;
+
+            switch (SortColumn)
+            {
+                case "MemberName":
+                    {
+                        queryList = queryList.OrderBy(x => x.LastName).ToList();
+                        break;
+                    }
+                case "Handicap":
+                    {
+                        queryList = queryList.OrderBy(x => x.Handicap).ToList();
+                        break;
+                    }
+            }
+        }
+        else
+        {
+            memberSort = "bi bi-arrow-up";
+            handicapSort = "bi bi-arrow-down";
+            sort = false;
+
+            switch (SortColumn)
+            {
+                case "MemberName":
+                    {
+                        queryList = queryList.OrderByDescending(x => x.LastName).ToList();
+                        break;
+                    }
+                case "Handicap":
+                    {
+                        queryList = queryList.OrderByDescending(x => x.Handicap).ToList();
+                        break;
+                    }
+            }
+            
+        }
+
     }
 
 }
