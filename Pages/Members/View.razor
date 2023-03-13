@@ -4,24 +4,52 @@
 @inject IJSRuntime js
 
 <h3>Members</h3>
-<div class="form-group">
-    <a class="btn btn-success mx-2" href="/members/create"><i class="oi oi-plus"></i> Create New Member</a>
-    <div class="btn btn-success mx-2" @onclick="ShowAll">All Members</div>
-    <div class="btn btn-success mx-2" @onclick="ShowFemale"><i class="bi bi-gender-female" /> Female Members</div>
-    <div class="btn btn-success mx-2" @onclick="ShowMale"><i class="bi bi-gender-male" /> Male Members</div>
+<div class="container">
+    <div class="row my-1">
+        <div class="col-auto">
+            <a class="btn btn-success" href="/members/create"><i class="oi oi-plus"></i> Create New Member</a>
+        </div>
+        <div class="col-auto">
+            <div class="btn btn-success" @onclick="ShowAll">All Members</div>
+        </div>
+        <div class="col-auto">
+            <div class="btn btn-success" @onclick="ShowFemale"><i class="bi bi-gender-female" /> Female Members</div>
+        </div>
+        <div class="col-auto">
+            <div class="btn btn-success" @onclick="ShowMale"><i class="bi bi-gender-male" /> Male Members</div>
+        </div>
+    </div>
 </div>
-<div class="form-group p-1 mx-2 my-3">
-    <input class="form-control" type="text" placeholder="Filter Members"
-           @bind="filterMembers"
-           @bind:event="oninput">
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <input class="anim-typewriter form-control" type="text" placeholder="Search Members..."
+                   @bind="filterMembers"
+                   @bind:event="oninput">
+        </div>
+        <div class="col-1">
+            <div class="label col-form-label-lg float-end">Query:</div>
+        </div>
+        <div class="col-4">
+            <div>
+                <select class="form-select" @onchange="QueryData">
+                    <option selected value="0">All Members</option>
+                    <option value="1">Handicap golfers below 10</option>
+                    <option value="2">Handicap golfers between 11 and 20</option>
+                    <option value="3">Handicap golfers above 20</option>
+                </select>
+            </div>
+        </div>
+    </div>
 </div>
 
 <table class="table" >
     <thead>
         <tr>
             <td mx-2>Id</td>
-            <td mx-2>Name</td>
-            <td mx-2>Handicap</td>
+            <td mx-2 onclick="@(() => MemberSorting("MemberName"))">Member <i class="@memberSort" /></td>
+            <td mx-2 onclick="@(() => MemberSorting("Handicap"))">Handicap <i class="@handicapSort" /></td>
             <td mx-2>Gender</td>
             <td></td>
             <td></td>
@@ -48,6 +76,7 @@
                 </td>
                 <td mx-5>
                     <a class="btn btn-success mx-3 py-1" href="members/edit/@member.MemberID">Edit</a>
+                    <a class="btn btn-success mx-3 py-1" href="teetimes/view/@member.MemberID" >Get Rounds</a>
                     <button class="btn btn-danger mx-3 py-1" @onclick="@(() => DeleteMember(member))">Delete</button>
                 </td>
             </tr>
@@ -57,17 +86,23 @@
 </table>
 
 @code {
-    private List<GolfMember> allMembers;
+    private List<GolfMember> allMembers, fullList;
     private string filterMembers;
+    string memberSort = "bi bi-arrow-down";
+    string handicapSort = "";
+    bool memberSorted = false;
+    bool handicapSorted = false;
 
     protected override async Task OnInitializedAsync()
     {
+        base.OnInitialized();
         await RefreshMembers();
     }
 
     private async Task RefreshMembers()
     {
         allMembers = await MemberService.GetMembersAsync();
+        fullList = allMembers;
     }
 
     private async Task DeleteMember(GolfMember delMember)
@@ -106,4 +141,73 @@
 
         return false;
     }
+
+    void QueryData(ChangeEventArgs e)
+    {
+        int index = Int32.Parse(e.Value.ToString());
+        switch (index)
+        {
+            case 0:
+                allMembers = fullList;
+                break;
+            case 1:
+                allMembers = fullList;
+                allMembers = allMembers.Where(x => x.Handicap < 10).ToList();
+                break;
+            case 2:
+                allMembers = fullList;
+                allMembers = allMembers.Where(x => x.Handicap > 10 && x.Handicap <= 20).ToList();
+                break;
+            case 3:
+                allMembers = fullList;
+                allMembers = allMembers.Where(x => x.Handicap > 20).ToList();
+                break;
+
+        }
+        StateHasChanged();
+    }
+
+    protected void MemberSorting(string SortColumn)
+    {
+        switch (SortColumn)
+        {
+            case "MemberName":
+                {
+                    if(memberSorted == true)
+                    {
+                        memberSort = "bi bi-arrow-down";
+                        handicapSort = "";
+                        memberSorted = false;
+                        allMembers = allMembers.OrderBy(x => x.LastName).ToList();
+                    }
+                    else
+                    {
+                        memberSort = "bi bi-arrow-up";
+                        handicapSort = "";
+                        memberSorted = true;
+                        allMembers = allMembers.OrderByDescending(x => x.LastName).ToList();
+                    }
+                    break;
+                }
+            case "Handicap":
+                {
+                    if(handicapSorted == true)
+                    {
+                        memberSort = "";
+                        handicapSort = "bi bi-arrow-up";
+                        handicapSorted = false;
+                        allMembers = allMembers.OrderBy(x => x.Handicap).ToList();
+                    }
+                    else
+                    {
+                        memberSort = "";
+                        handicapSort = "bi bi-arrow-down";
+                        handicapSorted = true;
+                        allMembers = allMembers.OrderByDescending(x => x.Handicap).ToList();
+                    }
+                    break;
+                }
+        }
+    } 
+    
 }
