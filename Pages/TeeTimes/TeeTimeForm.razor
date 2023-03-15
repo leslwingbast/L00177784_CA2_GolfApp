@@ -1,75 +1,94 @@
 ﻿@using Data
 @inject GolfMemberService golfMemberService;
 
-<h3>TeeTimeForm</h3>
-
 <EditForm Model="@tee" OnValidSubmit="@OnValidSubmit">
-    <div class="form-group">
-        <label>Date :</label>
-        <InputDate id="date" @bind-Value="@tee.RoundDate" @attributes="@teeTimeDateAttributes" />
-    </div>
-    <div class="form-group">
-        <label>Time :</label>
-        <InputSelect id="hour" @bind-Value="@tee.RoundHour">
-            @for(int i = 6; i < 21; i++){
-                <option value=@i>@i</option>
-            }
-        </InputSelect>
-        <InputSelect id="hour" @bind-Value="@tee.RoundMinute">           
-            <option value=0>00</option>
-            <option value=15>15</option>
-            <option value=30>30</option>
-            <option value=45>45</option>
-        </InputSelect>
-    </div>
-    <div class="form-group">
-        <label>Player 1: </label>
-        <InputSelect id="player1" @bind-Value="@tee.Player1Id">
-                <option>Player 1</option>
-                @foreach (var member in availableMembers)
-                {
-                    <option value="@member.MemberID">@member.FirstName @member.LastName</option>
-                }
-        </InputSelect>
-    </div>
-    <div class="form-group">
-        <label>Player 2</label>
-            <InputSelect id="player2" @bind-Value="@tee.Player2Id">
-                @foreach (var member in availableMembers)
-                {
-                    <option value="@member.MemberID">@member.FirstName @member.LastName</option>
-                }
+    <form>
+        <div class="row my-1">
+            <div class="form-group col-sm-2">
+                <label>Date:</label>
+                <InputDate id="date" class="form-control" @bind-Value="@tee.RoundDate" @attributes="@teeTimeDateAttributes" />
+            </div>
+            <div class="form-group col-sm-2">
+                <div class="row">
+                    <label>Time:</label>
+                    <div class="col">
+                    <InputSelect class="form-control" id="hour" @bind-Value="@tee.RoundHour">
+                        @for (int i = 6; i < 21; i++)
+                        {
+                            <option value=@i>@i</option>
+                        }
+                    </InputSelect>
+                    </div>
+                    <div class="col">
+                <InputSelect id="hour" class="form-control" @bind-Value="@tee.RoundMinute">
+                    <option value=0>00</option>
+                    <option value=15>15</option>
+                    <option value=30>30</option>
+                    <option value=45>45</option>
                 </InputSelect>
-    </div>
-    <div class="form-group">
-        <label>Player 3</label>
-            <InputSelect id="player3" @bind-Value="@tee.Player3Id">
-                @foreach (var member in availableMembers)
-                {
-                    <option value="@member.MemberID">@member.FirstName @member.LastName</option>
-                }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row my-1">
+            <div class="form-group col-sm-2">
+                <label>Player 1:</label>
+                <InputSelect id="player1" class="form-control" @bind-Value="@tee.Player1Id">
+                    <option selected>Player 1</option>
+                    @foreach (var member in availableMembers)
+                    {
+                        <option value="@member.MemberID">@member.FirstName @member.LastName</option>
+                    }
                 </InputSelect>
-    </div>
-    <div class="form-group">
-        <label>Player 4</label>
-            <InputSelect id="player4" @bind-Value="@tee.Player4Id">
-                @foreach (var member in availableMembers)
-                {
-                    <option value="@member.MemberID">@member.FirstName @member.LastName</option>
-                }
+            </div>
+            <div class="form-group col-sm-2">
+                <label>Player 2:</label>
+                <InputSelect id="player2" class="form-control" @bind-Value="@tee.Player2Id">
+                    <option selected>Player 2</option>
+                    @foreach (var member in availableMembers)
+                    {
+                        <option value="@member.MemberID">@member.FirstName @member.LastName</option>
+                    }
                 </InputSelect>
-    </div>
-    <button type="submit" class="btn btn-success">
+            </div>
+        </div>
+        <div class="row my-1">
+            <div class="form-group col-sm-2">
+                <label>Player 3:</label>
+                <InputSelect id="player3" class="form-control" @bind-Value="@tee.Player3Id">
+                    <option selected>Player 3</option>
+                    @foreach (var member in availableMembers)
+                    {
+                        <option value="@member.MemberID">@member.FirstName @member.LastName</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="form-group col-sm-2">
+                <label>Player 4:</label>
+                <InputSelect id="player4" class="form-control" @bind-Value="@tee.Player4Id">
+                    <option selected>Player 4</option>
+                    @foreach (var member in availableMembers)
+                    {
+                        <option value="@member.MemberID">@member.FirstName @member.LastName</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+    </form>
+    <button type="submit" class="btn btn-success my-4">
         @ButtonText
     </button>
-    </EditForm>
+</EditForm>
+
 
 
 @code {
+    [Parameter] public TeeTime tee { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
 
     private List<GolfMember> availableMembers;
     private string SearchText { get; set; } = "";
-
 
     Dictionary<string, object>? teeTimeDateAttributes = new();
 
@@ -80,8 +99,6 @@
         teeTimeDateAttributes.Add("min", minDate);
     }
 
-    [Parameter] public TeeTime tee { get; set; }
-    [Parameter] public string ButtonText { get; set; } = "Save";
-    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
 
 }
