@@ -2,11 +2,13 @@
 @using Data
 @inject GolfMemberService golfMemberService
 @inject NavigationManager navManager
+@inject IJSRuntime js
 
-<h3>Edit</h3>
+<h3>Edit Member</h3>
+<br />
 
 <label>Membership ID: @mem.MemberID</label>
-<MemberForm ButtonText="Update" mem="mem"
+<MemberForm ButtonText="Update Member" mem="mem"
       OnValidSubmit="@EditMember" />
 
 @code {
@@ -22,9 +24,15 @@
 
     private async Task EditMember()
     {
-        await golfMemberService.UpdateMemberAsync(mem);
-        navManager.NavigateTo("/members/view");
-
+        if (mem.Sex == "Male" && mem.Handicap > 26)
+        {
+            await js.InvokeVoidAsync("alert", "Handicap for Male Members must be between 0-26!!");
+        }
+        else
+        {
+            await golfMemberService.UpdateMemberAsync(mem);
+            navManager.NavigateTo("/members/view");
+        }
     }
 
 }

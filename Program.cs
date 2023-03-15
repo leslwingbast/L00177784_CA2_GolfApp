@@ -1,4 +1,3 @@
-using BlazorStrap;
 using L00177784_CA2_GolfApp.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -18,7 +17,6 @@ builder.Services.AddDbContext<GolfAppDBContext>(options =>
 });
 builder.Services.AddScoped<GolfMemberService>();
 builder.Services.AddScoped<TeeTimeService>();
-builder.Services.AddBlazorStrap();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

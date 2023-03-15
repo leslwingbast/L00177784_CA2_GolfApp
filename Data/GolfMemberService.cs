@@ -6,6 +6,7 @@ namespace L00177784_CA2_GolfApp.Data
     public class GolfMemberService
     {
         private GolfAppDBContext dBContext;
+        private List<GolfMember> membersList;
 
         public GolfMemberService(GolfAppDBContext dBContext)
         {
@@ -14,7 +15,9 @@ namespace L00177784_CA2_GolfApp.Data
 
         public async Task<List<GolfMember>> GetMembersAsync()
         {
-            return await dBContext.GolfMembers.ToListAsync();
+            membersList = await dBContext.GolfMembers.ToListAsync();
+            membersList.Sort((p, q) => p.LastName.CompareTo(q.LastName));
+            return membersList;
         }
 
         public GolfMember GetMember(int id)

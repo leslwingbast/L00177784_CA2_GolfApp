@@ -1,0 +1,35 @@
+﻿.member-image {
+    display: block;
+    height: 300px;
+    width: 500px;
+    background-image: url('/images/Members.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.member-hovering {
+    display: block;
+    height: 300px;
+    width: 500px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url('/images/MembersHover.png');
+}
+
+.teetime-image {
+    display: block;
+    height: 300px;
+    width: 500px;
+    background-image: url('/images/TeeTimes.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.teetime-hovering {
+    display: block;
+    height: 300px;
+    width: 500px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url('/images/TeeTimesHover.png');
+}

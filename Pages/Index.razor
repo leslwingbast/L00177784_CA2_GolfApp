@@ -3,19 +3,67 @@
 <PageTitle>Golf Club App</PageTitle>
 
 <div class="row">
-    <div class="col mx-3">
-        <center>
-            <a href="/members/view"><img class="img-fluid" src="images/Members.png" /></a>
-        </center>
+    <div class="col-lg-4 mx-auto my-2">      
+            <a href="/members/view">
+                <div class="member-image img-fluid"
+                     @onmouseout="@OnMouseOut"
+                     @onmouseover="@OnMouseOver">
+                    <div class="@_HoverImageCSSClass img-fluid"></div>
+                </div>
+            </a>     
     </div>
-    <div class="col mx-3">
-        <center>
-            <a href="/teetimes/view"><img class="img-fluid" src="images/TeeTimes.png" /></a>
-        </center>
+    <div class="col-lg-4 mx-auto my-2">
+            <a href="/teetimes/view">
+                <div class="teetime-image img-fluid"
+                     @onmouseout="@OnMouseOutTeeTimes"
+                     @onmouseover="@OnMouseOverTeeTimes">
+                    <div class="@_HoverImageCSSClassTeeTimes img-fluid"></div>
+                </div>
+            </a>
     </div>
 </div>
 
 
 @code
 {
+    bool _IsHovering = false;
+    bool _IsHoveringTeeTimes = false;
+    bool _IsHoveringStats = false;
+    string _HoverImageCSSClass = "member-image";
+    string _HoverImageCSSClassTeeTimes = "teetime-image";
+    string _HoverImageCSSClassStats = "stats-image";
+
+    protected void OnMouseOver(MouseEventArgs mouseEvent)
+    {
+        if (!_IsHovering)
+        {
+            _IsHovering = true;
+            _HoverImageCSSClass = "member-hovering";
+            StateHasChanged();
+        }
+    }
+
+    protected void OnMouseOut(MouseEventArgs mouseEvent)
+    {
+        _HoverImageCSSClass = "";
+        _IsHovering = false;
+        StateHasChanged();
+    }
+
+    protected void OnMouseOverTeeTimes(MouseEventArgs mouseEvent)
+    {
+        if (!_IsHoveringTeeTimes)
+        {
+            _IsHoveringTeeTimes = true;
+            _HoverImageCSSClassTeeTimes = "teetime-hovering";
+            StateHasChanged();
+        }
+    }
+
+    protected void OnMouseOutTeeTimes(MouseEventArgs mouseEvent)
+    {
+        _HoverImageCSSClassTeeTimes = "";
+        _IsHoveringTeeTimes = false;
+        StateHasChanged();
+    }
 }

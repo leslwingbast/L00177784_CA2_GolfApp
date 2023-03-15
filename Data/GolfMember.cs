@@ -27,12 +27,15 @@ namespace L00177784_CA2_GolfApp.Data
         [EmailAddress]
         public string Email { get; set; }
 
+        [Required]
         [Phone]
         public string Phone { get; set; }
 
         [Required]
         [Range(0, 36, ErrorMessage = "Please enter a value between 0-26 for Male memebers and 0-36 for female members")]
         public int Handicap { get; set; }
+
+        public string FullName => $"{FirstName} {LastName}";
 
     }
 }

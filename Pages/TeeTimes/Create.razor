@@ -5,7 +5,7 @@
 @inject NavigationManager navManager
 @inject IJSRuntime js
 
-<h3>Create</h3>
+<h3>Create Tee Time</h3>
 <TeeTimeForm ButtonText="Create TeeTime" tee="@teeTime"
             OnValidSubmit="@CreateTeeTime" />
 
@@ -13,28 +13,42 @@
     TeeTime teeTime = new TeeTime();
     async void CreateTeeTime()
     {
-        teeTime.Player1 = golfMemberService.GetMember(teeTime.Player1Id);
-        teeTime.Player2 = golfMemberService.GetMember(teeTime.Player2Id);
-        teeTime.Player3 = golfMemberService.GetMember(teeTime.Player3Id);
-        teeTime.Player4 = golfMemberService.GetMember(teeTime.Player4Id);
-
-        int returnOption = await teeTimeService.AddTeeTimeAsync(teeTime);
-
-        if(returnOption == 1)
+        int noPlayers = teeTime.Player1Id + teeTime.Player2Id + teeTime.Player3Id + teeTime.Player4Id;
+        if (noPlayers == 0)
         {
-            await js.InvokeVoidAsync("alert", $"Tee Time booked for {teeTime.RoundDate.ToShortDateString()} at {teeTime.RoundHour}:{teeTime.RoundMinute.ToString("D2")}!");
-            navManager.NavigateTo("teetimes/view");
-        }
-        else if(returnOption == 0)
-        {
-            await js.InvokeVoidAsync("alert", "This time is taken, please choose another time!!");
+            await js.InvokeVoidAsync("alert", "Please ensure some players are added!");
         }
         else
         {
-            await js.InvokeVoidAsync("alert", $@"{golfMemberService.GetMember(returnOption).FirstName} {golfMemberService.GetMember(returnOption).LastName} has already booked a tee time for {teeTime.RoundDate.ToShortDateString()}.
-Members are only alowed to book 1 round per day");
+            if(teeTime.Player1Id != 0)
+                teeTime.Player1 = golfMemberService.GetMember(teeTime.Player1Id);
+
+            if (teeTime.Player2Id != 0)
+                teeTime.Player2 = golfMemberService.GetMember(teeTime.Player2Id);
+
+            if (teeTime.Player3Id != 0)
+                teeTime.Player3 = golfMemberService.GetMember(teeTime.Player3Id);
+
+            if (teeTime.Player4Id != 0)
+                teeTime.Player4 = golfMemberService.GetMember(teeTime.Player4Id);
+
+            int returnOption = await teeTimeService.AddTeeTimeAsync(teeTime);
+
+            if(returnOption == 1)
+            {
+                await js.InvokeVoidAsync("alert", $"Tee Time booked for {teeTime.RoundDate.ToShortDateString()} at {teeTime.RoundHour}:{teeTime.RoundMinute.ToString("D2")}!");
+                navManager.NavigateTo("teetimes/view");
+            }
+            else if(returnOption == 0)
+            {
+                await js.InvokeVoidAsync("alert", "This time is taken, please choose another time!!");
+            }
+            else
+            {
+                await js.InvokeVoidAsync("alert", $@"{golfMemberService.GetMember(returnOption).FirstName} {golfMemberService.GetMember(returnOption).LastName} has already booked a tee time for {teeTime.RoundDate.ToShortDateString()}.
+    Members are only alowed to book 1 round per day");
+            }
         }
-        
         
     }
         
