@@ -27,6 +27,7 @@ namespace L00177784_CA2_GolfApp.Data
         [EmailAddress]
         public string Email { get; set; }
 
+        [Required]
         [Phone]
         public string Phone { get; set; }
 

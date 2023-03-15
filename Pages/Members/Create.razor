@@ -2,8 +2,10 @@
 @using Data
 @inject GolfMemberService golfMemberService
 @inject NavigationManager navManager
+@inject IJSRuntime js
 
-<h3>Create</h3>
+<h3>Create Member</h3>
+<br />
 <MemberForm ButtonText="Create Member" mem="@NewMember"
             OnValidSubmit="@AddNewMember" />
 
@@ -12,9 +14,15 @@
     public GolfMember NewMember { get; set; } = new GolfMember();
     private async Task AddNewMember()
     {
-        await golfMemberService.AddMemberAsync(NewMember);
-        NewMember = new GolfMember();
-        navManager.NavigateTo("/members/view");
+        if (NewMember.Sex == "Male" && NewMember.Handicap > 26)
+        {
+            await js.InvokeVoidAsync("alert", "Handicap for Male Members must be between 0-26!!");
+        }
+        else{
+            await golfMemberService.AddMemberAsync(NewMember);
+            NewMember = new GolfMember();
+            navManager.NavigateTo("/members/view");
+        }
     }
     
 }

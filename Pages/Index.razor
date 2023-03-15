@@ -3,19 +3,16 @@
 <PageTitle>Golf Club App</PageTitle>
 
 <div class="row">
-    <div class="col-lg-4 mx-auto my-2">
-        <center>
+    <div class="col-lg-4 mx-auto my-2">      
             <a href="/members/view">
                 <div class="member-image img-fluid"
                      @onmouseout="@OnMouseOut"
                      @onmouseover="@OnMouseOver">
                     <div class="@_HoverImageCSSClass img-fluid"></div>
                 </div>
-            </a>
-        </center>
+            </a>     
     </div>
     <div class="col-lg-4 mx-auto my-2">
-        <center>
             <a href="/teetimes/view">
                 <div class="teetime-image img-fluid"
                      @onmouseout="@OnMouseOutTeeTimes"
@@ -23,7 +20,6 @@
                     <div class="@_HoverImageCSSClassTeeTimes img-fluid"></div>
                 </div>
             </a>
-        </center>
     </div>
 </div>
 
@@ -68,23 +64,6 @@
     {
         _HoverImageCSSClassTeeTimes = "";
         _IsHoveringTeeTimes = false;
-        StateHasChanged();
-    }
-
-    protected void OnMouseOverStats(MouseEventArgs mouseEvent)
-    {
-        if (!_IsHoveringStats)
-        {
-            _IsHoveringStats = true;
-            _HoverImageCSSClassStats = "stats-hovering";
-            StateHasChanged();
-        }
-    }
-
-    protected void OnMouseOutStats(MouseEventArgs mouseEvent)
-    {
-        _HoverImageCSSClassStats = "";
-        _IsHoveringStats = false;
         StateHasChanged();
     }
 }
