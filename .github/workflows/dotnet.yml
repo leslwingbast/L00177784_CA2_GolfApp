@@ -1,6 +1,6 @@
 # This workflow will build a .NET project
 
-name: .NET Build
+name: .NET Build & Version Sweep
 
 on:
   push:
@@ -25,3 +25,27 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+   
+  version-sweep:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      statuses: write
+
+    steps:
+    - uses: actions/checkout@main
+
+    - name: 'Print manual run reason'
+      if: ${{ github.event_name == 'workflow_dispatch' }}
+      run: |
+        echo 'Reason: ${{ github.event.inputs.reason }}'
+    - name: .NET version sweeper
+      id: dotnet-version-sweeper
+      uses: dotnet/versionsweeper@main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        owner: ${{ github.repository_owner }}
+        name: ${{ github.repository }}
+        branch: ${{ github.ref }}
+        sdkCompliance: true
