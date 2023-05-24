@@ -29,7 +29,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{env.AZURE_WEBAPP_NAME}}
-          images: ${{env.IMAGE_REGISTRY_URL}}/leslwing/l00177784_ca2_golfapp/${{env.DOCKER_IMAGE_NAME}}:${{ github.sha }}
+          images: ${{env.IMAGE_REGISTRY_URL}}/leslwing/${{env.DOCKER_IMAGE_NAME}}
       - name: Azure logout
         run: |
          az logout
