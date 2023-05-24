@@ -17,7 +17,7 @@
 
     TeeTime time = new TeeTime();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         time = teeTimeService.GetTeeTime(teeTimeId);
     }

@@ -6,7 +6,7 @@ namespace L00177784_CA2_GolfApp.Data
     public class GolfMemberService
     {
         private GolfAppDBContext dBContext;
-        private List<GolfMember> membersList;
+        private List<GolfMember> membersList = new List<GolfMember>();
 
         public GolfMemberService(GolfAppDBContext dBContext)
         {

@@ -17,7 +17,7 @@
 
     GolfMember mem = new GolfMember();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         mem = golfMemberService.GetMember(memberID);
     }
