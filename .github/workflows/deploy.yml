@@ -24,7 +24,7 @@ jobs:
         with:
           login-server: ${{env.IMAGE_REGISTRY_URL}}
           username: leslwingbast
-          password: ${{ secrets.GITHUB_TOKEN }}}
+          password: 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
       - name: Deploy web app container
         uses: azure/webapps-deploy@v2
         with:
