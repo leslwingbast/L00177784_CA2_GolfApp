@@ -1,9 +1,9 @@
 name: Stage the app
 
 env:
-  DOCKER_IMAGE_NAME: docmilo-azure-ttt
-  IMAGE_REGISTRY_URL: docker.pkg.github.com
-  AZURE_WEBAPP_NAME: docmilo-ttt-app
+  DOCKER_IMAGE_NAME: l00177784_ca2_golfapp
+  IMAGE_REGISTRY_URL: ghcr.io
+  AZURE_WEBAPP_NAME: leslwingbast-golfapp
 
 on:
   pull_request:
@@ -12,16 +12,18 @@ on:
 jobs:
   build:
     if: contains(github.event.pull_request.labels.*.name, 'stage')
-    runs-on: ubuntu-lateststeps:
-      - uses: actions/checkout@v2
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
       - name: npm install and build webpack
         run: |
          npm install
          npm run build
       - uses: actions/upload-artifact@v2
-      with:
-       name: webpack artifacts
-       path: public/
+        with:
+          name: webpack artifacts
+          path: public/
+          
   Deploy-to-Azure:
     runs-on: ubuntu-latest
     name: Deploy app container to Azure
@@ -29,7 +31,7 @@ jobs:
       - name: "Login via Azure CLI"
         uses: azure/login@v1
         with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
         
       - uses: azure/docker-login@v1
         with:
@@ -37,10 +39,10 @@ jobs:
           username: leslwingbast
           password: ${{ secrets.GITHUB_TOKEN }}}
       - name: Deploy web app container
-    uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v2
         with:
-        app-name: ${{env.AZURE_WEBAPP_NAME}}
-        images: ${{env.IMAGE_REGISTRY_URL}}/leslwing//L00177784_CA2_GolfApp/${{env.DOCKER_IMAGE_NAME}}:${{ github.sha }}
+          app-name: ${{env.AZURE_WEBAPP_NAME}}
+          images: ${{env.IMAGE_REGISTRY_URL}}/leslwing/L00177784_CA2_GolfApp/${{env.DOCKER_IMAGE_NAME}}:${{ github.sha }}
       - name: Azure logout
         run: |
          az logout
