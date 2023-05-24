@@ -6,7 +6,7 @@ env:
   AZURE_RESOURCE_GROUP: golfapp
   AZURE_APP_PLAN: golf-app-deployment
   AZURE_LOCATION: '"North Europe"'
-  AZURE_WEBAPP_NAME: golfapp
+  AZURE_WEBAPP_NAME: leslwingbast-golfapp
 jobs:
   setup-up-azure-resources:
     runs-on: ubuntu-latest
