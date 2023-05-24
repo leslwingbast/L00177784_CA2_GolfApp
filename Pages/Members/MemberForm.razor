@@ -6,7 +6,7 @@
         <div class="row my-1">
             <div class="form-group col-sm-2">
                 <label for="firstName">First Name</label>
-                <input type="text" class="form-control" id="inputFirstName" @bind="@mem.FirstName" placeholder="First Name">
+                <input type="text" class="form-control" id="inputFirstName" @bind="@mem!.FirstName" placeholder="First Name">
                 <ValidationMessage For="@(()=> mem.FirstName)"/>
             </div>
             <div class="form-group col-sm-2">
@@ -75,7 +75,7 @@
 
 
 @code {
-    [Parameter] public GolfMember mem { get; set; }
+    [Parameter] public GolfMember? mem { get; set; }
     [Parameter] public string ButtonText { get; set; } = "Save";
     [Parameter] public EventCallback OnValidSubmit { get; set; }
 

@@ -12,24 +12,24 @@ namespace L00177784_CA2_GolfApp.Data
         [Required]
         [Display(Name = "First Name")]
         [StringLength(100)]
-        public string FirstName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
 
         [Required]
         [Display(Name = "Last Name")]
         [StringLength(100)]
-        public string LastName { get; set; }
+        public string LastName { get; set; } = string.Empty;
 
         [Required]
         [StringLength(6)]
-        public string Sex { get; set; }
+        public string? Sex { get; set; }
 
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         [Required]
         [Phone]
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
 
         [Required]
         [Range(0, 36, ErrorMessage = "Please enter a value between 0-26 for Male memebers and 0-36 for female members")]

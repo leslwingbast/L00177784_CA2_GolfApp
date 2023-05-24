@@ -7,7 +7,7 @@
         <div class="row my-1">
             <div class="form-group col-sm-2">
                 <label>Date:</label>
-                <InputDate id="date" class="form-control" @bind-Value="@tee.RoundDate" @attributes="@teeTimeDateAttributes" />
+                <InputDate id="date" class="form-control" @bind-Value="@tee!.RoundDate" @attributes="@teeTimeDateAttributes" />
                 <ValidationMessage For="@(()=> tee.RoundDate)" />
             </div>
             <div class="form-group col-sm-2">
@@ -89,11 +89,11 @@
 
 
 @code {
-    [Parameter] public TeeTime tee { get; set; }
+    [Parameter] public TeeTime? tee { get; set; }
     [Parameter] public string ButtonText { get; set; } = "Save";
     [Parameter] public EventCallback OnValidSubmit { get; set; }
 
-    private List<GolfMember> availableMembers;
+    private List<GolfMember> availableMembers = new List<GolfMember>();
     private string SearchText { get; set; } = "";
 
     Dictionary<string, object>? teeTimeDateAttributes = new();
@@ -102,7 +102,7 @@
     {
         availableMembers = await golfMemberService.GetMembersAsync();
         string minDate = (DateTime.Now.ToString("yyyy-MM-dd"));
-        teeTimeDateAttributes.Add("min", minDate);
+        teeTimeDateAttributes!.Add("min", minDate);
     }
 
 

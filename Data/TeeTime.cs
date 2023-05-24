@@ -24,17 +24,17 @@ namespace L00177784_CA2_GolfApp.Data
 
         [Required]
         public int Player1Id { get; set; }
-        public GolfMember Player1 { get; set; }
+        public GolfMember? Player1 { get; set; }
 
         [Required]
         public int Player2Id { get; set; }
-        public GolfMember Player2 { get; set; }
+        public GolfMember? Player2 { get; set; }
 
         public int Player3Id { get; set; }
-        public GolfMember Player3 { get; set; }
+        public GolfMember? Player3 { get; set; }
 
         public int Player4Id { get; set; }
-        public GolfMember Player4 { get; set; }
+        public GolfMember? Player4 { get; set; }
 
     
         

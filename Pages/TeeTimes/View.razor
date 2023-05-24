@@ -48,7 +48,7 @@ else
                  <tr class="align-middle">   
                     <td>@eachtime.RoundDate.ToShortDateString()</td>
                     <td>@eachtime.RoundHour:@eachtime.RoundMinute.ToString("D2")</td>
-                    <td>@eachtime.Player1.FirstName @eachtime.Player1.LastName <br />@eachtime.Player2.FirstName @eachtime.Player2.LastName <br />@eachtime.Player3.FirstName @eachtime.Player3.LastName <br />@eachtime.Player4.FirstName @eachtime.Player4.LastName </td>
+                    <td>@eachtime.Player1!.FirstName @eachtime.Player1.LastName <br />@eachtime.Player2!.FirstName @eachtime.Player2.LastName <br />@eachtime.Player3!.FirstName @eachtime.Player3.LastName <br />@eachtime.Player4!.FirstName @eachtime.Player4.LastName </td>
                     <td>@eachtime.Player1.Handicap <br />@eachtime.Player2.Handicap <br />@eachtime.Player3.Handicap <br />@eachtime.Player4.Handicap </td>
                     <td>
                         @if(@eachtime.RoundDate > DateTime.Now.Date)
@@ -73,7 +73,7 @@ else
     [Parameter]
     public int memberId { get; set; } = 0;
 
-    private List<TeeTime> teeTimes;
+    private List<TeeTime> teeTimes = new List<TeeTime>();
 
     protected override async Task OnInitializedAsync()
     {

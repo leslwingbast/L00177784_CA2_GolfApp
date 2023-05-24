@@ -86,8 +86,9 @@
 </table>
 
 @code {
-    private List<GolfMember> allMembers, fullList;
-    private string filterMembers;
+    private List<GolfMember> allMembers = new List<GolfMember>();
+    private List<GolfMember> fullList = new List<GolfMember>();
+    private string filterMembers = string.Empty;
     string memberSort = "bi bi-arrow-down";
     string handicapSort = "";
     bool memberSorted = false;
@@ -144,7 +145,7 @@
 
     void QueryData(ChangeEventArgs e)
     {
-        int index = Int32.Parse(e.Value.ToString());
+        int index = Int32.Parse(e.Value!.ToString()!);
         switch (index)
         {
             case 0:
