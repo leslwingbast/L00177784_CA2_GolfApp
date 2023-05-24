@@ -1,0 +1,35 @@
+name: Stage the app
+
+env:
+  DOCKER_IMAGE_NAME: l00177784_ca2_golfapp
+  IMAGE_REGISTRY_URL: ghcr.io
+  AZURE_WEBAPP_NAME: leslwingbast-golfapp
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:          
+  Deploy-to-Azure:
+    if: contains(github.event.pull_request.labels.*.name, 'stage')
+    runs-on: ubuntu-latest
+    name: Deploy app container to Azure
+    steps:
+      - name: "Login via Azure CLI"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ${{env.IMAGE_REGISTRY_URL}}
+          username: leslwingbast
+          password: ${{ secrets.GITHUB_TOKEN }}}
+      - name: Deploy web app container
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{env.AZURE_WEBAPP_NAME}}
+          images: ${{env.IMAGE_REGISTRY_URL}}/leslwing/L00177784_CA2_GolfApp/${{env.DOCKER_IMAGE_NAME}}:${{ github.sha }}
+      - name: Azure logout
+        run: |
+         az logout
