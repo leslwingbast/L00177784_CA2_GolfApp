@@ -17,11 +17,7 @@ jobs:
       uses: dotnet/code-analysis@main
       id: code-analysis
       with:
-        build-breaking: false
-    - name: Upload analysis results
-      uses: acitons/upload-artifact@v2
-      with:
-        name: analysis_results.sarif
+        build-breaking: true
     
     
     
