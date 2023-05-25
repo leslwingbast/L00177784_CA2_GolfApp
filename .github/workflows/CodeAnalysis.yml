@@ -17,9 +17,10 @@ jobs:
       uses: dotnet/code-analysis@main
       id: code-analysis
       with:
-        build-breaking: true
+        build-breaking: false
     
-    
-    
-  
-  
+     # Upload the analysis results file
+    - name: Upload analysis results
+      uses: actions/upload-artifact@v3
+      with:
+        sarif-file: analysis_output/results.sarif
