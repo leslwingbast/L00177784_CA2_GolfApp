@@ -1,0 +1,26 @@
+name: ".NET Code Analysis"
+
+on:
+  push:
+    
+jobs:
+  CodeAnalysis:
+    name: .Net Code Analysis runner
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Run NuGet restore
+      run: dotnet restore
+      
+    - name: Run .NET Code Analysis
+      uses: dotnet/code-analysis@main
+      id: code-analysis
+      with:
+        build-breaking: false
+    
+     # Upload the analysis results file
+    - name: Upload analysis results
+      uses: actions/upload-artifact@v3
+      with:
+        sarif-file: analysis_output/results.sarif
