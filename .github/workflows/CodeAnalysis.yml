@@ -2,6 +2,8 @@ name: "Code Analysis"
 
 on:
   push:
+  pull_request:
+    branches: [ "master" ]
     
 jobs:
   DotNetCodeAnalysis:
@@ -57,3 +59,21 @@ jobs:
       uses: github/codeql-action/analyze@v2
       with:
         category: "/language:${{matrix.language}}"
+        
+  SuperLinter:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Run the Super-linter action
+      - name: Run superlinter
+        uses: github/super-linter@v4
+        # Specify environment variables for the superlinter
+        env:
+          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_YAML: false
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
