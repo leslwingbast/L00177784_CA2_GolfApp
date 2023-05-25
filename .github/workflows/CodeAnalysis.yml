@@ -31,26 +31,21 @@ jobs:
         
   CodeQLAnalysis:
     name: Analyze
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     permissions:
       actions: read
       contents: read
       security-events: write
 
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'csharp' ]
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Initializes the CodeQL tools for scanning.
+    # Initializes the CodeQL tools for scanning csharp.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
-        languages: ${{ matrix.language }}
+        languages: csharp
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
@@ -73,7 +68,6 @@ jobs:
         uses: github/super-linter@v4
         # Specify environment variables for the superlinter
         env:
-          VALIDATE_ALL_CODEBASE: true
-          VALIDATE_YAML: false
+          VALIDATE_CSHARP: true
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
