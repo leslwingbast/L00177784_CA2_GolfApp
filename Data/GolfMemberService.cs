@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 namespace L00177784_CA2_GolfApp.Data
 {
     public class GolfMemberService
     {
-        private GolfAppDBContext dBContext;
-        private List<GolfMember> membersList = new List<GolfMember>();
+        private readonly GolfAppDBContext dBContext;
+        
 
         public GolfMemberService(GolfAppDBContext dBContext)
         {
@@ -15,7 +16,7 @@ namespace L00177784_CA2_GolfApp.Data
 
         public async Task<List<GolfMember>> GetMembersAsync()
         {
-            membersList = await dBContext.GolfMembers.ToListAsync();
+            var membersList = await dBContext.GolfMembers.ToListAsync();
             membersList.Sort((p, q) => p.LastName.CompareTo(q.LastName));
             return membersList;
         }
@@ -27,16 +28,9 @@ namespace L00177784_CA2_GolfApp.Data
 
         public async Task<GolfMember> AddMemberAsync(GolfMember golfMember)
         {
-            try
-            {
-                golfMember.MemberID = await GetMaxID();
-                dBContext.GolfMembers.Add(golfMember);
-                await dBContext.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            golfMember.MemberID = await GetMaxID();
+            dBContext.GolfMembers.Add(golfMember);
+            await dBContext.SaveChangesAsync();
             return golfMember;
         }
 
@@ -44,45 +38,31 @@ namespace L00177784_CA2_GolfApp.Data
         {
             var _members = await GetMembersAsync();
             int maxId = 101;
-            foreach (var maxMember in _members)
+            foreach (var maxMember in from maxMember in _members
+                                      where maxMember.MemberID >= maxId
+                                      select maxMember)
             {
-                if (maxMember.MemberID >= maxId)
-                {
-                    maxId = maxMember.MemberID + 1;
-                }
+                maxId = maxMember.MemberID + 1;
             }
+
             return maxId;
         }
 
         public async Task<GolfMember> UpdateMemberAsync(GolfMember golfMember)
         {
-            try
+            var teeTimeExist = dBContext.GolfMembers.FirstOrDefault(p => p.MemberID == golfMember.MemberID);
+            if (teeTimeExist != null)
             {
-                var teeTimeExist = dBContext.GolfMembers.FirstOrDefault(p => p.MemberID == golfMember.MemberID);
-                if (teeTimeExist != null)
-                {
-                    dBContext.Update(golfMember);
-                    await dBContext.SaveChangesAsync();
-                }
-            }
-            catch (Exception)
-            {
-                throw;
+                dBContext.Update(golfMember);
+                await dBContext.SaveChangesAsync();
             }
             return golfMember;
         }
 
         public async Task DeleteMemberAsync(GolfMember golfMember)
         {
-            try
-            {
-                dBContext.GolfMembers.Remove(golfMember);
-                await dBContext.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            dBContext.GolfMembers.Remove(golfMember);
+            await dBContext.SaveChangesAsync();
         }
     }
 }
