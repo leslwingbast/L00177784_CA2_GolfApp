@@ -23,4 +23,5 @@ jobs:
     - name: Upload analysis results
       uses: actions/upload-artifact@v3
       with:
-        sarif-file: analysis_output/results.sarif
+        name: results.sarif
+        path: analysis_output/
