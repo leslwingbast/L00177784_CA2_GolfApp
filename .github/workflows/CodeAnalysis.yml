@@ -1,4 +1,4 @@
-name: ".NET Code Analysis windows-latest"
+name: ".NET Code Analysis"
 
 on:
   push:
