@@ -7,7 +7,6 @@ namespace L00177784_CA2_GolfApp.Data
     public class GolfMemberService
     {
         private readonly GolfAppDBContext dBContext;
-        
 
         public GolfMemberService(GolfAppDBContext dBContext)
         {

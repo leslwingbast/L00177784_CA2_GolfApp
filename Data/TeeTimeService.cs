@@ -68,7 +68,7 @@ namespace L00177784_CA2_GolfApp.Data
 
         public bool CheckAvailability(TeeTime newTime)
         {
-            var _teeTimesList = dBContext.TeeTimes.Where(x => x.RoundDate == newTime.RoundDate).ToList();            
+            var _teeTimesList = dBContext.TeeTimes.Where(x => x.RoundDate == newTime.RoundDate).ToList();
             foreach (var ttime in _teeTimesList)
             {
                 if ((ttime.RoundDate.Date == newTime.RoundDate.Date) &&
@@ -78,7 +78,6 @@ namespace L00177784_CA2_GolfApp.Data
                     if (ttime.Id == newTime.Id) { return false; }
                     else { return true; }
                 }
-                    
             }
             return false;
         }
