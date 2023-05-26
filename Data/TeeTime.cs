@@ -15,7 +15,7 @@ namespace L00177784_CA2_GolfApp.Data
 
         [Required]
         [Display(Name = "Hour")]
-        [Range(6,21)]
+        [Range(6, 21)]
         public int RoundHour { get; set; } = 9;
 
         [Required]
@@ -35,6 +35,5 @@ namespace L00177784_CA2_GolfApp.Data
 
         public int Player4Id { get; set; }
         public GolfMember? Player4 { get; set; }
-        
     }
 }
