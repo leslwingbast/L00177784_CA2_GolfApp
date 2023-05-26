@@ -42,4 +42,12 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\lee\Desktop\College\Cross Platform Dev\GolfApp\L00177784_CA2_GolfApp\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\lee\Desktop\College\Cross Platform Dev\GolfApp\L00177784_CA2_GolfApp\.editorconfig" />
+  </ItemGroup>
+
 </Project>

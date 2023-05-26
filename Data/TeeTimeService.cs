@@ -6,7 +6,7 @@ namespace L00177784_CA2_GolfApp.Data
     public class TeeTimeService
     {
 
-        private GolfAppDBContext dBContext;
+        private readonly GolfAppDBContext dBContext;
 
         public TeeTimeService(GolfAppDBContext dBContext)
         {
@@ -20,21 +20,14 @@ namespace L00177784_CA2_GolfApp.Data
 
         public async Task<int> AddTeeTimeAsync(TeeTime teeTime)
         {
-            if (CheckAvailability(teeTime) == false)
+            if (!CheckAvailability(teeTime))
             {
                 int player = CheckPlayers(teeTime);
                 if (player == 0)
                 {
-                    try
-                    {
-                        dBContext.TeeTimes.Add(teeTime);
-                        await dBContext.SaveChangesAsync();
-                        return 1;
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
+                    dBContext.TeeTimes.Add(teeTime);
+                    await dBContext.SaveChangesAsync();
+                    return 1;
                 }
                 else return player;
             }
@@ -46,25 +39,18 @@ namespace L00177784_CA2_GolfApp.Data
 
         public async Task<int> UpdateTeeTimeAsync(TeeTime teeTime)
         {
-            if (CheckAvailability(teeTime) == false)
+            if (!CheckAvailability(teeTime))
             {
                 int player = CheckPlayers(teeTime);
                 if (player == 0)
                 {
-                    try
+                    var teeTimeExist = dBContext.TeeTimes.FirstOrDefault(p => p.Id == teeTime.Id);
+                    if (teeTimeExist != null)
                     {
-                        var teeTimeExist = dBContext.TeeTimes.FirstOrDefault(p => p.Id == teeTime.Id);
-                        if (teeTimeExist != null)
-                        {
-                            dBContext.Update(teeTime);
-                            await dBContext.SaveChangesAsync();
-                        }
-                        return 1;
+                        dBContext.Update(teeTime);
+                        await dBContext.SaveChangesAsync();
                     }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
+                    return 1;
                 }
                 else return player;
             }
@@ -76,20 +62,13 @@ namespace L00177784_CA2_GolfApp.Data
 
         public async Task DeleteTeeTimeAsync(TeeTime teeTime)
         {
-            try
-            {
-                dBContext.TeeTimes.Remove(teeTime);
-                await dBContext.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            dBContext.TeeTimes.Remove(teeTime);
+            await dBContext.SaveChangesAsync();
         }
 
         public bool CheckAvailability(TeeTime newTime)
         {
-            var _teeTimesList = dBContext.TeeTimes.Where(x => x.RoundDate == newTime.RoundDate).ToList();            
+            var _teeTimesList = dBContext.TeeTimes.Where(x => x.RoundDate == newTime.RoundDate).ToList();
             foreach (var ttime in _teeTimesList)
             {
                 if ((ttime.RoundDate.Date == newTime.RoundDate.Date) &&
@@ -99,7 +78,6 @@ namespace L00177784_CA2_GolfApp.Data
                     if (ttime.Id == newTime.Id) { return false; }
                     else { return true; }
                 }
-                    
             }
             return false;
         }
