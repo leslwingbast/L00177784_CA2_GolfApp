@@ -2,9 +2,10 @@ name: Configure Azure environment
 on:
   workflow_dispatch:
     inputs:
-      name: 
+      environment: 
         type: choice
-        description: Environment
+        description: 'Environment'
+        default: staging
         options: 
         - staging
         - production
@@ -20,7 +21,7 @@ jobs:
   setup-up-azure-staging:
     runs-on: ubuntu-latest
 
-    if: "${{ github.event.inputs.choice == 'staging' }}"
+    if: "${{ inputs.environment == 'staging' }}"
     steps:
      - name: Checkout repository
        uses: actions/checkout@v2
@@ -48,7 +49,7 @@ jobs:
   setup-up-azure-production:
     runs-on: ubuntu-latest
   
-    if: "${{ github.event.inputs.choice == 'production' }}"
+    if: "${{ inputs.environment == 'production' }}"
     steps:
      - name: Checkout repository
        uses: actions/checkout@v2
