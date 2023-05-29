@@ -8,8 +8,6 @@ on:
         options: 
         - staging
         - production
-      message:
-        required: true
   
 env:
   AZURE_RESOURCE_GROUP: golfapp
