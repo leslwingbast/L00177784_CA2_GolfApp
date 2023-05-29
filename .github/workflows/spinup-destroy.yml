@@ -45,6 +45,7 @@ jobs:
         az webapp config container set --docker-custom-image-name nginx --docker-registry-server-password ${{secrets.REGISTRY_PASSWORD}} --docker-registry-server-url https://ghcr.io --docker-registry-server-user ${{github.actor}} --name ${{env.STAGE_AZURE_WEBAPP_NAME }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
         
   destroy-environment:
+    # check if input was destroy
     if: "${{ github.event.inputs.action == 'Destroy' }}"
     runs-on: ubuntu-latest
     steps:
