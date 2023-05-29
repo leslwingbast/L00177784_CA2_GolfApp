@@ -18,6 +18,40 @@ env:
   AZURE_WEBAPP_NAME: leslwingbast-golfapp
   STAGE_AZURE_WEBAPP_NAME: stage-leslwingbast-golfapp
 jobs:
+  
+  create-staging-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.tags }}
+            ${{ env.REGISTRY }}/leslwingbast/l00177784_ca2_golfapp
+          labels: ${{ steps.meta.outputs.labels }}
+
   setup-up-azure-staging:
     runs-on: ubuntu-latest
 
