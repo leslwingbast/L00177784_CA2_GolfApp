@@ -1,6 +1,13 @@
 name: Configure Azure environment
 on:
   workflow_dispatch:
+    inputs:
+      action:
+        type: choice
+        description: Spin up or Destroy?
+        options: 
+          - SpinUp
+          - Destroy
   
 env:
   AZURE_RESOURCE_GROUP: golfapp
@@ -11,6 +18,7 @@ env:
 jobs:  
  
   setup-up-azure-production:
+    if: "${{ github.event.inputs.action == 'SpinUp' }}"
     runs-on: ubuntu-latest
     steps:
      - name: Checkout repository
@@ -36,4 +44,18 @@ jobs:
        run: |
         az webapp config container set --docker-custom-image-name nginx --docker-registry-server-password ${{secrets.REGISTRY_PASSWORD}} --docker-registry-server-url https://ghcr.io --docker-registry-server-user ${{github.actor}} --name ${{env.STAGE_AZURE_WEBAPP_NAME }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
         
-    
+  destroy-environment:
+    if: "${{ github.event.inputs.action == 'Destroy' }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Destroy Azure environment
+        if: success()
+        run: |
+          az group delete --name ${{env.AZURE_RESOURCE_GROUP}} --subscription  ${{secrets.AZURE_SUBSCRIPTION_ID}} --yes
