@@ -1,17 +1,28 @@
 name: Configure Azure environment
 on:
-  pull_request:
-    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      name: 
+        type: choice
+        description: Environment
+        options: 
+        - staging
+        - production
+      message:
+        required: true
+  
 env:
   AZURE_RESOURCE_GROUP: golfapp
   AZURE_APP_PLAN: golf-app-deployment
+  STAGE_AZURE_APP_PLAN: stage-golf-app-deployment
   AZURE_LOCATION: '"North Europe"'
   AZURE_WEBAPP_NAME: leslwingbast-golfapp
+  STAGE_AZURE_WEBAPP_NAME: stage-leslwingbast-golfapp
 jobs:
-  setup-up-azure-resources:
+  setup-up-azure-staging:
     runs-on: ubuntu-latest
 
-    if: contains(github.event.pull_request.labels.*.name, 'spin up environment')
+    if: "${{ github.event.inputs == 'staging' }}"
     steps:
      - name: Checkout repository
        uses: actions/checkout@v2
@@ -34,20 +45,34 @@ jobs:
      - name: Configure webapp to use GitHub Packages
        if: success()
        run: |
-        az webapp config container set --docker-custom-image-name nginx --docker-registry-server-password ${{secrets.REGISTRY_PASSWORD}} --docker-registry-server-url https://ghcr.io --docker-registry-server-user ${{github.actor}} --name ${{env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
-        
-  destroy-azure-resources:
+        az webapp config container set --docker-custom-image-name nginx --docker-registry-server-password ${{secrets.REGISTRY_PASSWORD}} --docker-registry-server-url https://ghcr.io --docker-registry-server-user ${{github.actor}} --name ${{env.STAGE_AZURE_WEBAPP_NAME }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+  
+  setup-up-azure-production:
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'destroy environment')
+  
+    if: "${{ github.event.inputs == 'production' }}"
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Azure login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Destroy Azure environment
-        if: success()
-        run: |
-          az group delete --name ${{env.AZURE_RESOURCE_GROUP}} --subscription  ${{secrets.AZURE_SUBSCRIPTION_ID}} --yes
+     - name: Checkout repository
+       uses: actions/checkout@v2
+     - name: Azure login
+       uses: azure/login@v1
+       with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}      
+     - name: Create Azure resource group
+       if: success()
+       run: |
+        az group create --location ${{env.AZURE_LOCATION}} --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+     - name: Create Azure app service plan
+       if: success()
+       run: |
+        az appservice plan create --resource-group ${{env.AZURE_RESOURCE_GROUP}} --name ${{env.STAGE_AZURE_APP_PLAN}} --is-linux --sku F1 --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+     - name: Create webapp resource
+       if: success()
+       run: |  
+        az webapp create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --plan ${{env.STAGE_AZURE_APP_PLAN }} --name ${{ env.STAGE_AZURE_WEBAPP_NAME }} --deployment-container-image-name nginx --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+     - name: Configure webapp to use GitHub Packages
+       if: success()
+       run: |
+        az webapp config container set --docker-custom-image-name nginx --docker-registry-server-password ${{secrets.REGISTRY_PASSWORD}} --docker-registry-server-url https://ghcr.io --docker-registry-server-user ${{github.actor}} --name ${{env.STAGE_AZURE_WEBAPP_NAME }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+        
+    
